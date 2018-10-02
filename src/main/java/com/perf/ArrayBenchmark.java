@@ -5,6 +5,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,9 @@ public class ArrayBenchmark {
 
         Options opt = new OptionsBuilder()
                 .include(ArrayBenchmark.class.getSimpleName())
+//                .timeout(TimeValue.seconds(1))
+                .warmupTime(TimeValue.seconds(1))
+                .measurementTime(TimeValue.seconds(1))
                 .forks(1)
                 .warmupForks(1)
                 .measurementIterations(10)
@@ -30,7 +34,7 @@ public class ArrayBenchmark {
         new Runner(opt).run();
     }
 
-    @Param({"16", "32", "64", "128"})
+    @Param({"16", "32", "64", "128", "256"})
     int size;
 
     @Setup
