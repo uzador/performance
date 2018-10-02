@@ -9,14 +9,12 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-//@State(Scope.Thread)
+@State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class ArrayBenchmark {
 
-//    private int SIZE = 10;
-//    private int src[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-//    private int[] dst;
+    int[] src, dst;
 
     public static void main(String[] args) throws RunnerException {
 //        org.openjdk.jmh.Main.main(args);
@@ -32,10 +30,15 @@ public class ArrayBenchmark {
         new Runner(opt).run();
     }
 
-//    @Setup
-//    public void init() {
-//        dst = new int[SIZE];
-//    }
+    @Param({"16", "32", "64", "128"})
+    int size;
+
+    @Setup
+    public void init() {
+        src = new int[size];
+        dst = new int[size];
+        Arrays.fill(src, 23);
+    }
 
 //    @TearDown
 //    public void check(ArarysState state) {
@@ -43,45 +46,45 @@ public class ArrayBenchmark {
 //    }
 
     @Benchmark
-    public int[] copyUsingNativeCallSystemArrayCopy(ArarysState state) {
-        System.arraycopy(state.src, 0, state.dst, 0, state.size);
-        return state.dst;
+    public int[] copyUsingNativeCallSystemArrayCopy() {
+        System.arraycopy(src, 0, dst, 0, size);
+        return dst;
     }
 
     @Benchmark
-    public int[] copyUsingArrayCopy(ArarysState state) {
-        return Arrays.copyOf(state.src, state.size);
+    public int[] copyUsingArrayCopy() {
+        return Arrays.copyOf(src, size);
     }
 
     @Benchmark
-    public int[] copyUsingArrayCopyOfRange(ArarysState state) {
-        return Arrays.copyOfRange(state.src, 0, state.size);
+    public int[] copyUsingArrayCopyOfRange() {
+        return Arrays.copyOfRange(src, 0, size);
     }
 
     @Benchmark
-    public int[] copyUsingStreamApi(ArarysState state) {
-        return Arrays.stream(state.src).toArray();
+    public int[] copyUsingStreamApi() {
+        return Arrays.stream(src).toArray();
     }
 
     @Benchmark
-    public int[] copyUsingManualLoop(ArarysState state) {
-        for (int i = 0; i < state.size; i++) {
-            state.dst[i] = state.src[i];
+    public int[] copyUsingManualLoop() {
+        for (int i = 0; i < size; i++) {
+            dst[i] = src[i];
         }
 
-        return state.dst;
+        return dst;
     }
 
     @Benchmark
-    public int[] copyUsingClone(ArarysState state) {
-        return state.src.clone();
+    public int[] copyUsingClone() {
+        return src.clone();
     }
 
-    @State(Scope.Thread)
-    public static class ArarysState {
-        public int size = 10;
-        public int src[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-        public int dst[] = new int[size];
-    }
+//    @State(Scope.Thread)
+//    public static class ArarysState {
+//        public int size = 10;
+//        public int src[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+//        public int dst[] = new int[size];
+//    }
 
 }
