@@ -1,6 +1,7 @@
 package com.perf;
 
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class ArrayBenchmark {
+public class ArrayCopyBenchmark {
 
     int[] src, dst;
 
@@ -21,7 +22,7 @@ public class ArrayBenchmark {
 //        org.openjdk.jmh.Main.main(args);
 
         Options opt = new OptionsBuilder()
-                .include(ArrayBenchmark.class.getSimpleName())
+                .include(ArrayCopyBenchmark.class.getSimpleName())
 //                .timeout(TimeValue.seconds(1))
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
@@ -43,11 +44,6 @@ public class ArrayBenchmark {
         dst = new int[size];
         Arrays.fill(src, 23);
     }
-
-//    @TearDown
-//    public void check(ArarysState state) {
-//        assert Arrays.equals(state.src, state.dst) : "Wrong?";
-//    }
 
     @Benchmark
     public int[] copyUsingNativeCallSystemArrayCopy() {
@@ -71,9 +67,10 @@ public class ArrayBenchmark {
     }
 
     @Benchmark
-    public int[] copyUsingManualLoop() {
+    public int[] copyUsingManualLoop(Blackhole bh) {
         for (int i = 0; i < size; i++) {
             dst[i] = src[i];
+            bh.consume(dst[i]);
         }
 
         return dst;

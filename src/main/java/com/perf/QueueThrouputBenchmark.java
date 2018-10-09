@@ -9,7 +9,6 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
-import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -17,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Group)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class QueueBenchmark {
+public class QueueThrouputBenchmark {
 
-    private static final String SPSC_ARRAY_QUEUE = "SpscArrayQueue";
-    private static final String ARRAY_BLOCKING_QUEUE = "ArrayBlockingQueue";
-    private static final String ONE_TO_ONE_CONCURRENT_ARRAY_QUEUE = "OneToOneConcurrentArrayQueue";
+    private static final String JCTOOL_SPSC_ARRAY_QUEUE = "SpscArrayQueue";
+    private static final String JDK_ARRAY_BLOCKING_QUEUE = "ArrayBlockingQueue";
+    private static final String AGRONE_ONE_TO_ONE_CONCURRENT_ARRAY_QUEUE = "OneToOneConcurrentArrayQueue";
 
     static final Object TEST_ELEMENT = 1;
 
@@ -29,7 +28,7 @@ public class QueueBenchmark {
     Integer element = 1;
     Integer escape;
 
-    @Param(value = {SPSC_ARRAY_QUEUE, ARRAY_BLOCKING_QUEUE, ONE_TO_ONE_CONCURRENT_ARRAY_QUEUE})
+    @Param(value = {JCTOOL_SPSC_ARRAY_QUEUE, JDK_ARRAY_BLOCKING_QUEUE, AGRONE_ONE_TO_ONE_CONCURRENT_ARRAY_QUEUE})
     String qType;
 
     @Param("128000")
@@ -37,13 +36,13 @@ public class QueueBenchmark {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(QueueBenchmark.class.getSimpleName())
+                .include(QueueThrouputBenchmark.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
                 .warmupForks(1)
-                .measurementIterations(5)
-                .warmupIterations(5)
+                .measurementIterations(10)
+                .warmupIterations(10)
                 .build();
 
         new Runner(opt).run();
@@ -52,13 +51,13 @@ public class QueueBenchmark {
     @Setup
     public void createQueue() {
         switch (qType) {
-            case SPSC_ARRAY_QUEUE:
+            case JCTOOL_SPSC_ARRAY_QUEUE:
                 q = new SpscArrayQueue<>(qCapacity);
                 break;
-            case ARRAY_BLOCKING_QUEUE:
+            case JDK_ARRAY_BLOCKING_QUEUE:
                 q = new ArrayBlockingQueue<>(qCapacity);
                 break;
-            case ONE_TO_ONE_CONCURRENT_ARRAY_QUEUE:
+            case AGRONE_ONE_TO_ONE_CONCURRENT_ARRAY_QUEUE:
                 q = new OneToOneConcurrentArrayQueue<>(qCapacity);
                 break;
             default:
