@@ -1,4 +1,4 @@
-package com.perf;
+package com.perf.map;
 
 import com.koloboke.collect.map.hash.HashObjObjMaps;
 import gnu.trove.map.hash.THashMap;
@@ -14,16 +14,22 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import static com.perf.map.ObjectObjectMapGetBenchmark.BATCH_SIZE;
+
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
-@Warmup(batchSize = 1_000_000)
-@Measurement(batchSize = 1_000_000)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class ObjectObjectMapsBenchmark {
+@Warmup(batchSize = BATCH_SIZE)
+@Measurement(batchSize = BATCH_SIZE)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+public class ObjectObjectMapGetBenchmark {
+
+    static final int BATCH_SIZE = 1_000_000;
+
     private static final String JDK_HASH_MAP = "JDK:HashMap";
     private static final String FAST_UTIL_OPEN_HASH_MAP = "FAST_UTIL:Object2ObjectOpenHashMap";
     private static final String TROVE_HASH_MAP = "TROVE:THashMap";
@@ -32,18 +38,26 @@ public class ObjectObjectMapsBenchmark {
     private static final String JDK_CONCURRENT_HASH_MAP = "JDK:ConcurrentHashMap";
     private static final String KOLOBOKE_HASH_MAP = "KOLOBOKE:HashObjObjMaps.newMutableMap";
 
-    Map<Integer, Integer> map;
-    int index;
-
     @Param(value = {JDK_HASH_MAP, KOLOBOKE_HASH_MAP, TROVE_HASH_MAP, FAST_UTIL_OPEN_HASH_MAP, AGRONA_HASH_MAP, JDK_CONCURRENT_HASH_MAP, ECLIPSE_CONCURRENT_HASH_MAP})
     String qType;
 
-    @Param({"128", "1024"})
+    @Param({"128", "512", "1024"})
     int qCapacity;
+
+    Map<Integer, Integer> map;
+
+    private Integer[] data = new Integer[BATCH_SIZE];
+    int index;
+
+    {
+        for(int i = 0; i < data.length; i++) {
+            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+        }
+    }
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(ObjectObjectMapsBenchmark.class.getSimpleName())
+                .include(ObjectObjectMapGetBenchmark.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
@@ -85,45 +99,18 @@ public class ObjectObjectMapsBenchmark {
 
         index = 0;
         for (int i = 0; i < qCapacity; i++) {
-            map.put(i, i);
+            map.put(data[i], i);
         }
     }
 
     @TearDown(Level.Invocation)
     public void setIndex() {
-        index = ThreadLocalRandom.current().nextInt(qCapacity);
+        index = ThreadLocalRandom.current().nextInt(data.length - 1);
 //        index++;
     }
 
-//    @AuxCounters
-//    @State(Scope.Thread)
-//    public static class PollCounters {
-//        public long pollsFaild;
-//        public long pollsMade;
-//    }
-
-//    @AuxCounters
-//    @State(Scope.Thread)
-//    public static class OfferCounters {
-//        public long offersFaild;
-//        public long offersMade;
-//    }
-
     @Benchmark
     public void get(Blackhole bh) {
-        bh.consume(map.get(index));
+        bh.consume(map.get(data[index]));
     }
-
-//    @Benchmark
-//    @Group("tpt")
-//    public void poll(PollCounters counters) {
-//        Integer e = q.poll();
-//        if (e == null) {
-//            counters.pollsFaild++;
-//        } else if (e == TEST_ELEMENT) {
-//            counters.pollsMade++;
-//        } else {
-//            escape = e;
-//        }
-//    }
 }
