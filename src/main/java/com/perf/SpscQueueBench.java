@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Group)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class QueueThrouputBenchmark {
+public class SpscQueueBench {
 
     private static final String JCTOOL_SPSC_ARRAY_QUEUE = "SpscArrayQueue";
     private static final String JDK_ARRAY_BLOCKING_QUEUE = "ArrayBlockingQueue";
@@ -36,7 +36,7 @@ public class QueueThrouputBenchmark {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(QueueThrouputBenchmark.class.getSimpleName())
+                .include(SpscQueueBench.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)

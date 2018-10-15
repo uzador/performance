@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class ArrayCopyBenchmark {
+public class ArrayCopyBench {
 
     int[] src, dst;
 
@@ -22,7 +22,7 @@ public class ArrayCopyBenchmark {
 //        org.openjdk.jmh.Main.main(args);
 
         Options opt = new OptionsBuilder()
-                .include(ArrayCopyBenchmark.class.getSimpleName())
+                .include(ArrayCopyBench.class.getSimpleName())
 //                .timeout(TimeValue.seconds(1))
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))

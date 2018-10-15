@@ -14,21 +14,18 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static com.perf.map.ObjectObjectMapGetBenchmark.BATCH_SIZE;
+import static com.perf.map.Util.BATCH_SIZE;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(batchSize = BATCH_SIZE)
 @Measurement(batchSize = BATCH_SIZE)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class ObjectObjectMapGetBenchmark {
-
-    static final int BATCH_SIZE = 1_000_000;
+public class ObjectObjectMapGetBench {
 
     private static final String JDK_HASH_MAP = "JDK:HashMap";
     private static final String FAST_UTIL_OPEN_HASH_MAP = "FAST_UTIL:Object2ObjectOpenHashMap";
@@ -45,19 +42,12 @@ public class ObjectObjectMapGetBenchmark {
     int qCapacity;
 
     Map<Integer, Integer> map;
-
-    private Integer[] data = new Integer[BATCH_SIZE];
     int index;
-
-    {
-        for(int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
-        }
-    }
+    Integer[] data = new Integer[BATCH_SIZE];
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(ObjectObjectMapGetBenchmark.class.getSimpleName())
+                .include(ObjectObjectMapGetBench.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
@@ -71,6 +61,12 @@ public class ObjectObjectMapGetBenchmark {
 
     @Setup(Level.Iteration)
     public void createMap() {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+//            data[i] = ThreadLocalRandom.current().nextInt(qCapacity);
+//            data[i] = 1_000_000;
+        }
+
         switch (qType) {
             case JDK_HASH_MAP:
                 map = new HashMap<>(qCapacity, 0.75F);

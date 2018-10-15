@@ -18,16 +18,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static com.perf.map.ObjectObjectMapPutBenchmark.BATCH_SIZE;
+import static com.perf.map.Util.BATCH_SIZE;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(batchSize = BATCH_SIZE)
 @Measurement(batchSize = BATCH_SIZE)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class ObjectObjectMapPutBenchmark {
-    static final int BATCH_SIZE = 1_000_000;
-
+public class ObjectObjectMapPutBench {
     private static final String JDK_HASH_MAP = "JDK:HashMap";
     private static final String FAST_UTIL_OPEN_HASH_MAP = "FAST_UTIL:Object2ObjectOpenHashMap";
     private static final String TROVE_HASH_MAP = "TROVE:THashMap";
@@ -43,19 +41,12 @@ public class ObjectObjectMapPutBenchmark {
     int qCapacity;
 
     Map<Integer, Integer> map;
-
-    private Integer[] data = new Integer[BATCH_SIZE];
     int index;
-
-    {
-        for(int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
-        }
-    }
+    Integer[] data = new Integer[BATCH_SIZE];
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(ObjectObjectMapPutBenchmark.class.getSimpleName())
+                .include(ObjectObjectMapPutBench.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
@@ -96,6 +87,11 @@ public class ObjectObjectMapPutBenchmark {
         }
 
         index = 0;
+        for (int i = 0; i < data.length; i++) {
+            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+//            data[i] = ThreadLocalRandom.current().nextInt(qCapacity);
+//            data[i] = 1_000_000;
+        }
     }
 
     @TearDown(Level.Invocation)
