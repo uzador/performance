@@ -1,4 +1,4 @@
-package com.perf;
+package com.perf.array;
 
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;

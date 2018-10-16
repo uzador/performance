@@ -19,14 +19,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static com.perf.map.Util.BATCH_SIZE;
+import static com.perf.map.Util.LOAD_FACTOR;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(batchSize = BATCH_SIZE)
 @Measurement(batchSize = BATCH_SIZE)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class ObjectObjectMapGetBench {
-
+public class ObjectObjectPutBench {
     private static final String JDK_HASH_MAP = "JDK:HashMap";
     private static final String FAST_UTIL_OPEN_HASH_MAP = "FAST_UTIL:Object2ObjectOpenHashMap";
     private static final String TROVE_HASH_MAP = "TROVE:THashMap";
@@ -47,7 +47,7 @@ public class ObjectObjectMapGetBench {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(ObjectObjectMapGetBench.class.getSimpleName())
+                .include(ObjectObjectPutBench.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
@@ -61,30 +61,24 @@ public class ObjectObjectMapGetBench {
 
     @Setup(Level.Iteration)
     public void createMap() {
-        for (int i = 0; i < data.length; i++) {
-            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
-//            data[i] = ThreadLocalRandom.current().nextInt(qCapacity);
-//            data[i] = 1_000_000;
-        }
-
         switch (qType) {
             case JDK_HASH_MAP:
-                map = new HashMap<>(qCapacity, 0.75F);
+                map = new HashMap<>(qCapacity, LOAD_FACTOR);
                 break;
             case KOLOBOKE_HASH_MAP:
                 map = HashObjObjMaps.newMutableMap();
                 break;
             case TROVE_HASH_MAP:
-                map = new THashMap<>(qCapacity, 0.75F);
+                map = new THashMap<>(qCapacity, LOAD_FACTOR);
                 break;
             case FAST_UTIL_OPEN_HASH_MAP:
-                map = new Object2ObjectOpenHashMap<>(qCapacity, 0.75F);
+                map = new Object2ObjectOpenHashMap<>(qCapacity, LOAD_FACTOR);
                 break;
             case AGRONA_HASH_MAP:
-                map = new Object2ObjectHashMap<>(qCapacity, 0.75F);
+                map = new Object2ObjectHashMap<>(qCapacity, LOAD_FACTOR);
                 break;
             case JDK_CONCURRENT_HASH_MAP:
-                map = new ConcurrentHashMap<>(qCapacity, 0.75F);
+                map = new ConcurrentHashMap<>(qCapacity, LOAD_FACTOR);
                 break;
             case ECLIPSE_CONCURRENT_HASH_MAP:
                 map = new org.eclipse.collections.impl.map.mutable.ConcurrentHashMap(qCapacity);
@@ -94,8 +88,10 @@ public class ObjectObjectMapGetBench {
         }
 
         index = 0;
-        for (int i = 0; i < qCapacity; i++) {
-            map.put(data[i], i);
+        for (int i = 0; i < data.length; i++) {
+            data[i] = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+//            data[i] = ThreadLocalRandom.current().nextInt(qCapacity);
+//            data[i] = 1_000_000;
         }
     }
 
@@ -107,6 +103,6 @@ public class ObjectObjectMapGetBench {
 
     @Benchmark
     public void get(Blackhole bh) {
-        bh.consume(map.get(data[index]));
+        bh.consume(map.put(data[index], index));
     }
 }
