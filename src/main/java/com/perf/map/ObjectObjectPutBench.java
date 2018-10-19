@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static com.perf.map.Util.BATCH_SIZE;
-import static com.perf.map.Util.LOAD_FACTOR;
+import static com.perf.map.MapUtil.BATCH_SIZE;
+import static com.perf.map.MapUtil.LOAD_FACTOR;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)

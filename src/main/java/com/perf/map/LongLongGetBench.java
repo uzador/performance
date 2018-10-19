@@ -26,7 +26,7 @@ import static com.perf.map.MapUtil.LOAD_FACTOR;
 @Warmup(batchSize = BATCH_SIZE)
 @Measurement(batchSize = BATCH_SIZE)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class LongLongPutBench {
+public class LongLongGetBench {
 
     @Param({"128", "512", "1024"})
     int qCapacity;
@@ -41,7 +41,7 @@ public class LongLongPutBench {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(LongLongPutBench.class.getSimpleName())
+                .include(LongLongGetBench.class.getSimpleName())
                 .warmupTime(TimeValue.seconds(1))
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
@@ -68,6 +68,13 @@ public class LongLongPutBench {
         agronaMap = new Long2LongHashMap(qCapacity, LOAD_FACTOR, -1_000_000L);
 
         index = 0;
+        for (int i = 0; i < qCapacity; i++) {
+            jdkMap.put(data[i], (long) i);
+            fastUtilMap.put(data[i], (long) i);
+            troveMap.put(data[i], (long) i);
+            agronaMap.put(data[i], (long) i);
+            kolobokeMap.put(data[i], (long) i);
+        }
     }
 
     @TearDown(Level.Iteration)
@@ -78,26 +85,26 @@ public class LongLongPutBench {
 
     @Benchmark
     public void jdk(Blackhole bh) {
-        bh.consume(jdkMap.put(data[index], 1L));
+        bh.consume(jdkMap.get(data[index]));
     }
 
     @Benchmark
     public void kolobok(Blackhole bh) {
-        bh.consume(kolobokeMap.put(data[index], 1L));
+        bh.consume(kolobokeMap.get(data[index]));
     }
 
     @Benchmark
     public void trove(Blackhole bh) {
-        bh.consume(troveMap.put(data[index], 1L));
+        bh.consume(troveMap.get(data[index]));
     }
 
     @Benchmark
     public void fastUtil(Blackhole bh) {
-        bh.consume(fastUtilMap.put(data[index], 1L));
+        bh.consume(fastUtilMap.get(data[index]));
     }
 
     @Benchmark
     public void agrona(Blackhole bh) {
-        bh.consume(agronaMap.put(data[index], 1L));
+        bh.consume(agronaMap.get(data[index]));
     }
 }
