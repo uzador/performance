@@ -1,23 +1,22 @@
 $(document).ready(function(){
     const months = ["ЯНВАРЯ", "ФЕВРАЛЯ", "МАРТА","АПРЕЛЯ", "МАЯ", "ИЮНЯ", "ИЮЛЯ", "АВГУСТА", "СЕНТЯБРЯ", "ОКТЯБРЯ", "НОЯБРЬ", "ДЕКАБРЯ"];
 
-    var id = 1
-    var weekCount = 2
-    var url = 'http://typicon.online/Schedule/get/' + id + '/' + weekCount
+    const id = 1
+    const weekCount = 2
+    const url = 'http://typicon.online/Schedule/get/' + id + '/' + weekCount
 
     $.ajax({
         url: url,
        	type: 'GET',
     }).done(function(jsonResp) {
-//        var schedule = JSON.stringify(data, null, '  ')
-        var schedule = JSON.stringify(jsonResp)
+        const schedule = JSON.stringify(jsonResp, null, '  ')
 
         jsonResp.schedule.forEach(function(value) {
             console.log(value.Value.Name.Text);
 
             value.Value.Days.forEach(function(day) {
-                var wDate = new Date(day.Date)
-                var wDateFormatted = wDate.getDate() + "-" + months[wDate.getMonth()] + "-" + wDate.getFullYear()
+                const wDate = new Date(day.Date)
+                const wDateFormatted = wDate.getDate() + "-" + months[wDate.getMonth()] + "-" + wDate.getFullYear()
 
                 console.log("  " + wDateFormatted);
                 console.log("  " + day.Name.Text);
@@ -31,6 +30,6 @@ $(document).ready(function(){
 
 	    $("#schedule").css({"white-space": "pre-wrap"}).text(schedule);
     }).fail(function(jsonResp) {
-        console.log("NO! " + JSON.stringify(jsonResp, null, '  '));
+        $("#schedule").text("Ошибка при загрузки расписания: " + JSON.stringify(jsonResp, null, '  '));
     });
 }); 
