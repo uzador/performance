@@ -1,36 +1,43 @@
 $(document).ready(function(){
     const months = ["ЯНВАРЯ", "ФЕВРАЛЯ", "МАРТА","АПРЕЛЯ", "МАЯ", "ИЮНЯ", "ИЮЛЯ", "АВГУСТА", "СЕНТЯБРЯ", "ОКТЯБРЯ", "НОЯБРЬ", "ДЕКАБРЯ"];
 
-    var id = 1
-    var weekCount = 2
-    var url = 'http://typicon.online/Schedule/get/' + id + '/' + weekCount
+    const id = 1
+    const weekCount = 2
+    const url = 'http://typicon.online/Schedule/get/' + id + '/' + weekCount
 
     $.ajax({
         url: url,
        	type: 'GET',
+       	async: false
     }).done(function(jsonResp) {
-//        var schedule = JSON.stringify(data, null, '  ')
-        var schedule = JSON.stringify(jsonResp)
+//        const schedule = JSON.stringify(jsonResp, null, '  ')>
+
+        $("#schedule").text("Расписание").wrapInner("<h1></h1>");
 
         jsonResp.schedule.forEach(function(value) {
-            console.log(value.Value.Name.Text);
+            $("#schedule").append("<div><h2>" + value.Value.Name.Text + "</h2></div>");
+//            console.log(value.Value.Name.Text);
 
             value.Value.Days.forEach(function(day) {
-                var wDate = new Date(day.Date)
-                var wDateFormatted = wDate.getDate() + "-" + months[wDate.getMonth()] + "-" + wDate.getFullYear()
+                const wDate = new Date(day.Date)
+                const wDateFormatted = wDate.getDate() + "-" + months[wDate.getMonth()] + "-" + wDate.getFullYear()
 
-                console.log("  " + wDateFormatted);
-                console.log("  " + day.Name.Text);
-                console.log("  " + "Знак службы: " + day.SignName.Text);
+                $("#schedule").append("<div><h3>" + wDateFormatted + "</h3></div>");
+                $("#schedule").append("<div>" + day.Name.Text + "</div>");
+                $("#schedule").append("<div>Знак службы: " + day.SignName.Text + "</div>");
+//                console.log("  " + wDateFormatted);
+//                console.log("  " + day.Name.Text);
+//                console.log("  " + "Знак службы: " + day.SignName.Text);
 
                 day.Worships.forEach(function(worship) {
-                    console.log("    " + worship.Time + " " + worship.Name.Text.Text);
+                    $("#schedule").append("<div>" + worship.Time + " " + worship.Name.Text.Text + "</div>");
+//                    console.log("    " + worship.Time + " " + worship.Name.Text.Text);
                 });
             })
         });
 
-	    $("#schedule").css({"white-space": "pre-wrap"}).text(schedule);
+//	    $("#schedule").css({"white-space": "pre-wrap"}).text(schedule);
     }).fail(function(jsonResp) {
-        console.log("NO! " + JSON.stringify(jsonResp, null, '  '));
+        console.log("Ошибка: " + JSON.stringify(jsonResp, null, '  '));
     });
 }); 
