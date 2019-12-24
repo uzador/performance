@@ -1,0 +1,16 @@
+div #sched_sedmica_name {
+    color: red;
+}
+
+div #sched_date, #sched_day_name {
+    font-weight: bold;
+}
+
+div #sched_date {
+    margin-top: 10px;
+}
+
+div #sched_day_sign {
+    font-weight: lighter;
+    text-decoration: underline;
+}
