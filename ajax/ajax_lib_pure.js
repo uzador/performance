@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 
     const url = 'http://typicon.online/Schedule/json?id=' + id + '&weekscount=' + weekCount
 
-    var xhr = new XMLHttpRequest()
+    const xhr = new XMLHttpRequest()
 
     xhr.onreadystatechange = function() {
         if(xhr.readyState < 4) {
@@ -27,7 +27,13 @@ document.addEventListener("DOMContentLoaded", function(event){
     };
 
     success = function(response) {
-        const scheduleDiv = document.getElementById("schedule");
+        let scheduleDiv = document.getElementById("schedule");
+
+        if (scheduleDiv == null) {
+            const script = document.scripts[document.scripts.length - 1]
+            scheduleDiv = document.createElement('schedule')
+            script.parentElement.insertBefore(scheduleDiv, script);
+        }
 
         const jsonResp = JSON.parse(response);
 
