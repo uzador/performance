@@ -1,12 +1,15 @@
 document.addEventListener("DOMContentLoaded", function(event){
 
     const MONTHS = ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ', 'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ',
-     'НОЯБРЯ', 'ДЕКАБРЯ',]
+     'НОЯБРЯ', 'ДЕКАБРЯ']
+     const SCHED_ERROR = "Элемент <div id=schedule></div> должен существовать в теле документа, чтобы загрузить расписание"
 
-    const id = 'berluki'
-    const weekCount = 2
+    args = getScriptArgs()
 
-    const url = 'http://typicon.online/Schedule/json?id=' + id + '&weekscount=' + weekCount
+    const id = args['id']
+    const weeks = args['weeks']
+
+    const url = 'http://typicon.online/Schedule/json?id=' + id + '&weekscount=' + weeks
 
     const xhr = new XMLHttpRequest()
 
@@ -31,8 +34,15 @@ document.addEventListener("DOMContentLoaded", function(event){
 
         if (scheduleDiv == null) {
             const script = document.scripts[document.scripts.length - 1]
+            if (script.parentElement.localName == 'head') {
+                console.error(SCHED_ERROR)
+                alert(SCHED_ERROR)
+
+                return
+            }
+
             scheduleDiv = document.createElement('schedule')
-            script.parentElement.insertBefore(scheduleDiv, script);
+            script.parentElement.insertBefore(scheduleDiv, script)
         }
 
         const jsonResp = JSON.parse(response);
@@ -63,11 +73,24 @@ document.addEventListener("DOMContentLoaded", function(event){
                     const worshipDiv = scheduleDiv.appendChild(document.createElement('div'))
                     worshipDiv.setAttribute('id', 'sched_day_worship')
                     worshipDiv.innerHTML = worship.Time + " " + worship.Name.Text.Text
-                });
+                })
             })
-        });
+        })
     }
 
     xhr.open('GET', url, true)
     xhr.send()
-});
+
+    function getScriptArgs() {
+        const script_id = document.getElementById('schedule_script_id')
+        const query = script_id.src.replace(/^[^\?]+\??/,'')
+        const vars = query.split("&")
+        const args = {}
+            for (var i=0; i < vars.length; i++) {
+                var pair = vars[i].split("=")
+                args[pair[0]] = decodeURI(pair[1]).replace(/\+/g, ' ')
+             }
+
+        return args
+    }
+})
