@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+    <script type="text/javascript" src="lib/jquery-3.4.1.min.js"></script>
+
+    <script type="text/javascript" src="lib/jquery.validationEngine.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.validationEngine-ru.js"></script>
+    <link rel="stylesheet" href="validationEngine.jquery.css">
+
+    <script type="text/javascript" src="bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <script src="payment_form_lib_bs.js"></script>
+    <!--    <link rel="stylesheet" href="payment_form_lib.css">-->
+
+    <script src="codemirror/lib/codemirror.js"></script>
+    <!--    <script src="codemirror/mode/javascript/javascript.js"></script>-->
+    <script src="codemirror/addon/hint/show-hint.js"></script>
+    <script src="codemirror/addon/hint/names-hint.js"></script>
+    <!--    <script src="codemirror/addon/hint/javascript-hint.js"></script>-->
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" charset="utf-8">
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="form-group">
+        <form id="payment_form" action="http://berluki.server.paykeeper.ru/create/" method="POST"
+              accept-charset="utf-8">
+            <!--            <div class="form-group">-->
+            <!--                <div class="form-check-inline">-->
+            <!--                    <label class="form-check-label">-->
+            <!--                        <input type="radio" class="form-check-input form-radio" name="first_list" value="0"-->
+            <!--                               checked="checked">О здравии</label>-->
+            <!--                </div>-->
+            <!--                <div class="form-check-inline">-->
+            <!--                    <label class="form-check-label">-->
+            <!--                        <input type="radio" class="form-check-input form-radio" name="first_list" value="1">О-->
+            <!--                        упокоении</label>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <div class="form-group">
+                <div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+                    <label class="btn btn-outline-secondary active">
+                        <input type="radio" name="first_list" value="0"
+                               autocomplete="off" checked>О здравии</label>
+                    <label class="btn btn-outline-secondary">
+                        <input type="radio" name="first_list" value="1"
+                               autocomplete="off">О упокоении</label>
+                </div>
+            </div>
+
+            <!--            <div class="form-group">-->
+            <!--                <div class="form-check-inline">-->
+            <!--                    <label class="form-check-label">-->
+            <!--                        <input type="radio" class="form-check-input" name="second_list" value="0" checked="checked">Единовременно</label>-->
+            <!--                </div>-->
+            <!--                <div class="form-check-inline">-->
+            <!--                    <label class="form-check-label">-->
+            <!--                        <input type="radio" class="form-check-input" name="second_list" value="1">Сорокоуст</label>-->
+            <!--                </div>-->
+            <!--                <div class="form-check-inline">-->
+            <!--                    <label class="form-check-label">-->
+            <!--                        <input type="radio" class="form-check-input" name="second_list" value="2">Полгода</label>-->
+            <!--                </div>-->
+            <!--                <div class="form-check-inline">-->
+            <!--                    <label class="form-check-label">-->
+            <!--                        <input type="radio" class="form-check-input" name="second_list" value="3">Год</label>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <div class="form-group">
+                <div class="btn-group-vertical btn-group-toggle" role="group" data-toggle="buttons">
+                    <label class="btn btn-outline-secondary active">
+                        <input type="radio" name="second_list" value="0" autocomplete="off"
+                               checked>Единовременно</label>
+                    <label class="btn btn-outline-secondary">
+                        <input type="radio" name="second_list" value="1" autocomplete="off">Сорокоуст</label>
+                    <label class="btn btn-outline-secondary">
+                        <input type="radio" name="second_list" value="2" autocomplete="off">Полгода</label>
+                    <label class="btn btn-outline-secondary">
+                        <input type="radio" name="second_list" value="3" autocomplete="off">Год</label>
+                </div>
+            </div>
+
+            <div id="generatedDynamically"></div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Имена</span>
+                    </div>
+                    <textarea id="names" name="names" class="form-control" rows="4" placeholder="Список имен"
+                              data-validation-engine="validate[required]" data-prompt-position="topLeft">
+                </textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Электронная почта</span>
+                    </div>
+                    <input id="client_email" name="client_email" class="form-control" type="text"
+                           placeholder="myname@mail.ru"
+                           data-validation-engine="validate[required,custom[email]]" data-prompt-position="topLeft"/>
+                </div>
+            </div>
+
+            <!--            <div class="form-group row">-->
+            <!--                <label for="sum" class="col-2">Сумма:</label>-->
+            <!--                <div class="col-10">-->
+            <!--                    <input id="sum" name="sum" class="form-control" size="50" type="text" placeholder="0"-->
+            <!--                           data-validation-engine="validate[required,custom[number]]" data-prompt-position="topLeft"/>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Сумма</span>
+                    </div>
+                    <input id="sum" name="sum" class="form-control" size="50" type="text" placeholder="0"
+                           data-validation-engine="validate[required,custom[number]]" data-prompt-position="topLeft"/>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" class="btn btn-secondary" value="Перейти к оплате"/>
+            </div>
+
+            <input id="orderid" name="orderid" type="text"/>
+            <input type="hidden" name="user_result_callback" value="https://www.berluki.ru"/>
+            <input type="text" name="pstype" value="vtb"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

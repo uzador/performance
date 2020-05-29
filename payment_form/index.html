@@ -1,0 +1,80 @@
+<html>
+<head>
+    <script type="text/javascript" src="lib/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.validationEngine.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.validationEngine-ru.js"></script>
+    <script src="payment_form_lib.js"></script>
+    <link rel="stylesheet" href="validationEngine.jquery.css">
+    <link rel="stylesheet" href="payment_form_lib.css">
+
+    <meta charset="utf-8">
+</head>
+
+<body>
+<form id="payment_form" action="https://demo.paykeeper.ru/create/" method="POST" accept-charset="utf-8" target="_top">
+<!--<form action="http://berluki.server.paykeeper.ru/vtb/create/" method="POST" accept-charset="utf-8" target="_top">-->
+    <ul style="list-style: none; border: 5px solid black">
+        <li>
+            <label>
+            <input type="radio" name="first_list" class="form-radio" data-validation-engine="validate[required]" value="0" checked="checked">О здравии</label>
+        </li>
+        <li>
+            <label>
+            <input type="radio" name="first_list" class="form-radio" data-validation-engine="validate[required]" value="1">О упокоении</label>
+        </li>
+    </ul>
+
+    <ul style="list-style: none; border: 5px solid black">
+        <li>
+            <label>
+            <input type="radio" name="second_list" data-validation-engine="validate[required]" value="0" checked="checked">Единовременно</label>
+        </li>
+        <li>
+            <label>
+            <input type="radio" name="second_list" data-validation-engine="validate[required]" value="1">Сорокоуст</label>
+        </li>
+        <li>
+            <label>
+            <input type="radio" name="second_list" data-validation-engine="validate[required]" value="2">Полгода</label>
+        </li>
+        <li>
+            <label>
+            <input type="radio" name="second_list" data-validation-engine="validate[required]" value="3">Год</label>
+        </li>
+    </ul>
+
+    <div id="generatedDynamically"></div>
+
+    Имена:
+    <textarea name="names" rows="10" cols="30" placeholder="Список имен"
+              data-validation-engine="validate[required]" data-prompt-position="topRight">
+    </textarea>
+    <br/>
+
+    <input id="orderid" name="orderid" type="text"/>
+
+    <input name="user_result_callback" value="https://www.berluki.ru" type="hidden"/>
+
+    Электронная почта:
+    <input id="client_email" name="client_email" type="text" placeholder="myname@mail.ru"
+           data-validation-engine="validate[required,custom[email]]" data-prompt-position="topRight"/>
+    <br/>
+
+    Тип платежной системы:
+    <input name="method" type="radio" data-validation-engine="validate[required]" data-prompt-position="topRight" value="vtb_visa"/>Visa
+    <input name="method" type="radio" data-validation-engine="validate[required]" data-prompt-position="topRight" value="vtb_master"/>Master
+    <input name="method" type="radio" data-validation-engine="validate[required]" data-prompt-position="topRight" value="vtb_mir"/>Mir
+    <br/>
+
+    Сумма:
+    <input id="sum" name="sum" size="50" type="text" placeholder="0"
+           data-validation-engine="validate[required,custom[number]]" data-prompt-position="topRight"/>
+    <br/>
+
+    <input type="submit" value="Перейти к оплате"/>
+
+    <input type="hidden" value="1111" name="paymentid" autocomplete="off">
+
+</form>
+</body>
+</html>
