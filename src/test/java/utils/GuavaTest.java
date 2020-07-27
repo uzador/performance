@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,6 +31,32 @@ public class GuavaTest {
 
         assertThatThrownBy(() -> bookStore.setCount("Potter", -1))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        bookStore.add(null);
+        bookStore.add(null);
+        System.out.println(bookStore);
+        System.out.println(bookStore.size());
+
+        Multiset<String> bookStore1 = HashMultiset.create();
+        bookStore1.add("Potter");
+        bookStore1.add("Potter");
+        bookStore1.add("Potter");
+        bookStore1.add(null);
+        bookStore1.add(null);
+
+        Multiset<String> bookStore2 = HashMultiset.create();
+        bookStore2.add("Potter");
+
+        Map<String, Multiset<String>> map = new HashMap<>();
+        map.put("1", bookStore);
+        map.put("2", bookStore1);
+        map.put("3", bookStore2);
+
+        System.out.println("=====================================");
+        System.out.println(bookStore.size());
+        System.out.println(bookStore1.size());
+        System.out.println(bookStore2.size());
+        System.out.println(map.values());
     }
 
     @Test

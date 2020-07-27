@@ -51,7 +51,7 @@ buildResult = function() {
         var resultText = trimText(firstListChoiceText) + " " +
                          trimText(secondListChoiceText) + " " +
                          trimText(thirdListChoiceText) + " " +
-                         trimText(names)
+                         names
 
         var result = $('input:text[name=orderid]')
         result.val(resultText)

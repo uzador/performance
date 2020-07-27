@@ -1,10 +1,7 @@
 package com.interview;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class SomeApp {
@@ -48,10 +45,26 @@ public class SomeApp {
     }
 
     public static void main(String[] args) {
-        TopN<Integer> top = new TopN<>(5, Integer.class);
-        IntStream.rangeClosed(1, 10).forEach(top::add);
-        top.print();
+//        TopN<Integer> top = new TopN<>(5, Integer.class);
+//        IntStream.rangeClosed(1, 10).forEach(top::add);
+//        top.print();
+//
+//        top.printMore();
 
-        top.printMore();
+        ArrayList<Integer> arrlist = new ArrayList<>();
+        arrlist.add(1);
+        arrlist.add(3);
+        arrlist.add(5);
+        arrlist.add(4);
+        arrlist.add(2);
+
+        System.out.println("List: "+arrlist);
+
+        int key = 9;
+        int index = Collections.binarySearch(arrlist, key);
+        System.out.println("Index: " + index);
+
+        arrlist.add(-index - 1, key);
+        System.out.println("List: "+arrlist);
     }
 }
